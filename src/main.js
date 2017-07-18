@@ -72,9 +72,6 @@ function Arguments(params) {
         if (m) {
             let name = m[1].toLowerCase();
             let val = m[3];
-            while((m = name.match(/-(\w)/))) {
-                name = name.replace(/-\w/g, m[1].toUpperCase());
-            }
             this[name] = val;
         }
         else {
@@ -130,7 +127,7 @@ if (args.command === "start" || args.command === "run" || args.command === "debu
     console.log(`version = ${version}`)
 }
 
-const runCmd = `docker run %opts --name="esp" -p 8000:8000 -v ${keypath}:/esp ` +
+const runCmd = `docker run %opts --name="esp" -p ${args["esp-port"]}:${args["esp-port"]} -v ${keypath}:/esp ` +
     "gcr.io/endpoints-release/endpoints-runtime:1.0 ";
 const runArgs = `-s ${args.endpoint} -v ${version} ` +
     `-p ${args["esp-port"]} -a ${args.protocol}://${getLocalIpAddress()}:${args["app-port"]} -k /esp/${keyfile}`;
