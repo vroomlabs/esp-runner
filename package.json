@@ -10,7 +10,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "npm-push": "npm version patch && npm publish -tag latest --access public"
+    "npm-push": "npm version patch && npm publish -tag latest --access public && git push"
   },
   "engines": {
     "node": ">=4.0.0"
