@@ -100,7 +100,7 @@ if (args.command === "start" || args.command === "run" || args.command === "debu
 }
 
 const runCmd = `docker run %opts --name="esp" --net="host" -v ${keypath}:/esp ` +
-    "gcr.io/endpoints-release/endpoints-runtime:1.0 ";
+    "gcr.io/endpoints-release/endpoints-runtime:1 ";
 const runArgs = `-s ${args.endpoint} -v ${version} ` +
     `-p ${args["esp-port"]} -a ${args.protocol}://127.0.0.1:${args["app-port"]} -k /esp/${keyfile}`;
 
