@@ -27,6 +27,37 @@
 const path = require("path");
 const child = require("child_process");
 
+const os = require('os');
+const ifaces = os.networkInterfaces();
+
+function getLocalIpAddress() {
+  let ip_address = '127.0.0.1';
+
+  Object.keys(ifaces).forEach(function (ifname) {
+    var alias = 0;
+
+    ifaces[ifname].forEach(function (iface) {
+      if ('IPv4' !== iface.family || iface.internal !== false) {
+        // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+        return;
+      }
+
+      if (alias >= 1) {
+        // this single interface has multiple ipv4 addresses
+        console.log(ifname + ':' + alias, iface.address);
+        ip_address = iface.address;
+      } else {
+        // this interface has only one ipv4 adress
+        console.log(ifname, iface.address);
+        ip_address = iface.address;
+      }
+      ++alias;
+    });
+  });
+
+  return ip_address;
+}
+
 function Arguments(params) {
 
     this.endpoint = process.env.ENDPOINT_NAME || ""; //[service-name].endpoints.[google-project].cloud.goog
@@ -41,9 +72,6 @@ function Arguments(params) {
         if (m) {
             let name = m[1].toLowerCase();
             let val = m[3];
-            while((m = name.match(/-(\w)/))) {
-                name = name.replace(/-\w/g, m[1].toUpperCase());
-            }
             this[name] = val;
         }
         else {
@@ -99,10 +127,10 @@ if (args.command === "start" || args.command === "run" || args.command === "debu
     console.log(`version = ${version}`)
 }
 
-const runCmd = `docker run %opts --name="esp" --net="host" -v ${keypath}:/esp ` +
+const runCmd = `docker run %opts --name="esp" -p ${args["esp-port"]}:${args["esp-port"]} -v ${keypath}:/esp ` +
     "gcr.io/endpoints-release/endpoints-runtime:1 ";
 const runArgs = `-s ${args.endpoint} -v ${version} ` +
-    `-p ${args["esp-port"]} -a ${args.protocol}://127.0.0.1:${args["app-port"]} -k /esp/${keyfile}`;
+    `-p ${args["esp-port"]} -a ${args.protocol}://${getLocalIpAddress()}:${args["app-port"]} -k /esp/${keyfile}`;
 
 function stop() {
     try { child.execSync("docker stop esp"); }
