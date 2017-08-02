@@ -1,6 +1,6 @@
 {
   "name": "@vroomlabs/esp-runner",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Command line utility to launch or debug Google's Extensible Service Proxy",
   "author": "vroomlabs",
   "homepage": "https://github.com/vroomlabs/esp-runner#readme",
