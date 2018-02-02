@@ -100,6 +100,7 @@ Arguments:
     -esp-port=8000  # Port number for esp to listen on
     -app-port=8080  # Port number your application is listening on
     -protocol=grpc|http|https
+    -print-primitive=true|false
 
 Example:
 
@@ -129,8 +130,12 @@ if (args.command === "start" || args.command === "run" || args.command === "debu
 
 const runCmd = `docker run %opts --name="esp" -p ${args["esp-port"]}:${args["esp-port"]} -v ${keypath}:/esp ` +
     "gcr.io/endpoints-release/endpoints-runtime:1 ";
-const runArgs = `-s ${args.endpoint} -v ${version} ` +
+let runArgs = `-s ${args.endpoint} -v ${version} ` +
     `-p ${args["esp-port"]} -a ${args.protocol}://${getLocalIpAddress()}:${args["app-port"]} -k /esp/${keyfile}`;
+
+if (args['print-primitive'] === 'true') {
+    runArgs += ' --transcoding_always_print_primitive_fields'
+}
 
 function stop() {
     try { child.execSync("docker stop esp"); }
