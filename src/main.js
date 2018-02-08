@@ -123,7 +123,7 @@ if (args.command === "start" || args.command === "run" || args.command === "debu
 
     keypath = path.dirname(path.resolve(args.keyfile));
     keyfile = path.basename(args.keyfile);
-    version = child.execSync(`gcloud service-management describe ${args.endpoint} --format='value(serviceConfig.id)'`)
+    version = child.execSync(`gcloud endpoints services describe ${args.endpoint} --format='value(serviceConfig.id)'`)
         .toString().trim();
     console.log(`version = ${version}`)
 }
